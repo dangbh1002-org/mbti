@@ -1,0 +1,27 @@
+{
+  "rules": {
+    ".write": "root.child('users').child(auth.uid).child('isAdmin').val() === true",
+    "users": {
+      // Only admin can read, write and delete all list user
+      ".read": "auth.uid !== null",
+      ".write": "root.child('users').child(auth.uid).child('isAdmin').val() === true",
+      ".indexOn": ["uid"],
+
+      "$uid": {
+        // Anyone can read, write and delete their own user
+        ".read": "auth.uid !== null",
+        ".write": "auth.uid == $uid",
+        ".validate": "newData.child('displayName').isString()"
+      }
+    },
+    "answers": {
+      ".read": true,
+      ".write": true
+    },
+    "questions": {
+      ".read": true,
+      ".write": "root.child('users').child(auth.uid).child('isAdmin').val() === true"
+    }
+
+  }
+}

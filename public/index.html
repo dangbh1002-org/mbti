@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Test MBTI</title>
+    <link rel="icon" href="/favicon.ico">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+    <link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' rel="stylesheet" type="text/css">
+    <link href="https://unpkg.com/vuetify/dist/vuetify.min.css" rel="stylesheet" type="text/css">
+
+    <style>
+      [v-cloak] > * { display:none; }
+      [v-cloak]::before { content: "Loading..."; }
+
+      .fade-enter-active, .fade-leave-active {
+        transition: opacity 0.5s
+      }
+      .fade-enter, .fade-leave-to{
+        opacity: 0
+      }
+      .fade-enter-to, .fade-leave {
+        opacity: 1
+      }
+
+      v-toolbar{
+        z-index: 999;
+      }
+    </style>
+
+    <script>
+      window.fbAsyncInit = function() {
+        FB.init({
+          appId            : '1634805133248693',
+          autoLogAppEvents : true,
+          xfbml            : true,
+          version          : 'v2.10'
+        });
+        FB.AppEvents.logPageView();
+      };
+
+      (function(d, s, id){
+         var js, fjs = d.getElementsByTagName(s)[0];
+         if (d.getElementById(id)) {return;}
+         js = d.createElement(s); js.id = id;
+         js.src = "//connect.facebook.net/en_US/sdk.js";
+         fjs.parentNode.insertBefore(js, fjs);
+       }(document, 'script', 'facebook-jssdk'));
+    </script>
+
+  </head>
+  <body>
+    <div id="app" v-cloak>
+
+      <v-app id="example-2" standalone>
+        <v-navigation-drawer persistent light :mini-variant.sync="mini" v-model="drawer" overflow style="z-index: 99999" v-if="user">
+          <v-toolbar flat class="transparent">
+            <v-list class="pa-0">
+              <v-list-tile avatar tag="div">
+
+                <v-list-tile-avatar>
+
+                  <img :style="{
+                    'width': '50px',
+                    'height': '50px',
+                    'margin-top': '15px',
+                    'margin-left': 'auto',
+                    'margin-right': 'auto',
+                    'margin-bottom': '15px',
+                    'background-image': 'url('+ user.photoURL +')',
+                    'background-repeat': 'no-repeat',
+                    'background-size': 'cover'
+                  }" />
+                </v-list-tile-avatar>
+
+                <v-list-tile-content>
+                  <v-list-tile-title>{{user.displayName}}</v-list-tile-title>
+                </v-list-tile-content>
+                <v-list-tile-action>
+                  <v-btn icon @click.native.stop="mini = !mini">
+                    <v-icon>chevron_left</v-icon>
+                  </v-btn>
+                </v-list-tile-action>
+              </v-list-tile>
+            </v-list>
+          </v-toolbar>
+          <v-list class="pt-0" dense>
+            <v-divider></v-divider>
+            <v-list-tile v-for="item in items" :key="item.title" @click="changePath(item.path)">
+              <v-list-tile-action>
+                <v-icon>{{ item.icon }}</v-icon>
+              </v-list-tile-action>
+              <v-list-tile-content>
+                <v-list-tile-title>{{ item.title }}</v-list-tile-title>
+              </v-list-tile-content>
+            </v-list-tile>
+
+            <v-list-tile @click="signOut()">
+              <v-list-tile-action>
+                <v-icon>star_half</v-icon>
+              </v-list-tile-action>
+              <v-list-tile-content>
+                <v-list-tile-title>Sign-out</v-list-tile-title>
+              </v-list-tile-content>
+            </v-list-tile>
+
+          </v-list>
+        </v-navigation-drawer>
+        <v-toolbar fixed class="indigo darken-4" dark style="z-index: 9999">
+          <v-toolbar-side-icon @click.native.stop="drawer = !drawer"></v-toolbar-side-icon>
+          <v-toolbar-title>MBTI</v-toolbar-title>
+        </v-toolbar>
+        <main>
+
+          <v-layout fluid class="text-xs-center">
+            <v-flex xs12>
+              <h3 class="text-xs-center" style="margin-bottom: 0; margin-top: 20px"><b>Test MBTI</b></h3>
+              <p class="text-xs-center" style="margin-bottom: 0">Trắc nghiệm tính cách MBTI</p>
+              <div class="text-xs-center">
+                <img src="/favicon.ico" width="150px"/>
+              </div>
+              <v-btn class="primary" @click="signIn()" v-if="!user">SignIn with Facebook</v-btn>
+            </v-flex>
+          </v-layout>
+
+          <transition :duration="200" name="fade" mode="out-in" v-if="user" >
+            <keep-alive>
+              <router-view></router-view>
+            </keep-alive>
+          </transition>
+
+          <template v-if="user">
+            <v-footer class="pa-3" style="margin-top: 100px">
+              <v-spacer></v-spacer>
+              <div>Brian Dhang © {{ new Date().getFullYear() }}</div>
+            </v-footer>
+          </template>
+        </main>
+      </v-app>
+
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="/dist/build.js"></script>
+  </body>
+</html>
